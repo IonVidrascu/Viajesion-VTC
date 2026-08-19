@@ -1,0 +1,2131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Viajesion VTC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f4f1;
+      --surface: #ffffff;
+      --border: #e2dfd8;
+      --text: #1c1b19;
+      --muted: #6b6560;
+      --navy: #1e2a3a;
+      --navy-soft: #2c3e50;
+      --accent: #c9a87c;
+      --green: #059669;
+      --green-bg: #d1fae5;
+      --orange: #d97706;
+      --orange-bg: #fef3c7;
+      --danger: #dc2626;
+      --danger-bg: #fee2e2;
+      --header-h: 56px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      height: var(--header-h);
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px 0 16px;
+      gap: 8px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    .brand-icon {
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .date-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .date-nav button {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .date-nav button:active { background: rgba(255,255,255,0.2); }
+    .date-display {
+      font-size: 13px;
+      font-weight: 600;
+      min-width: 100px;
+      text-align: center;
+      padding: 6px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .date-display:active { background: rgba(255,255,255,0.1); }
+    .date-display .wd {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      opacity: 0.7;
+      text-transform: capitalize;
+    }
+    .btn-today {
+      font-size: 11px !important;
+      font-weight: 600;
+      width: auto !important;
+      padding: 0 10px;
+      background: rgba(255,255,255,0.15) !important;
+    }
+    .top-actions { display: flex; gap: 4px; }
+    .btn-icon {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-icon:active { background: rgba(255,255,255,0.2); }
+
+    /* TOOLBAR */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .stats {
+      display: flex;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .stats strong { color: var(--text); }
+    .btn-add {
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-add:active { opacity: 0.9; transform: scale(0.98); }
+
+    /* TABLE */
+    .table-wrap {
+      margin: 0 10px 20px;
+      background: var(--surface);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: auto;
+      max-height: calc(100dvh - 140px);
+      -webkit-overflow-scrolling: touch;
+    }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13px;
+      min-width: 980px;
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--navy-soft);
+      color: #fff;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 11px 10px;
+      text-align: left;
+      white-space: nowrap;
+      border-bottom: 1px solid var(--border);
+    }
+    tbody td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      background: var(--surface);
+      line-height: 1.35;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #faf9f7; }
+    tbody tr { cursor: pointer; }
+    tbody tr.past td { opacity: 0.55; }
+
+    .col-time {
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      font-size: 14px;
+      white-space: nowrap;
+      width: 58px;
+      line-height: 1.35;
+    }
+    .col-ref {
+      font-weight: 600;
+      color: #2563eb;
+      font-size: 13px;
+      white-space: nowrap;
+      line-height: 1.35;
+    }
+    .col-client { font-weight: 600; }
+    .col-passenger {
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .col-passenger .tel {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .col-vehicle {
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .vehicle-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      background: #eef2ff;
+      color: #3730a3;
+      line-height: 1.35;
+      vertical-align: top;
+    }
+    .vehicle-badge.luxury { background: #fef3c7; color: #92400e; }
+    .vehicle-badge.minivan { background: #ecfdf5; color: #065f46; }
+    .col-place, .col-dest {
+      font-size: 12px;
+      min-width: 140px;
+      max-width: 220px;
+      white-space: normal;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      line-height: 1.35;
+    }
+    .col-driver {
+      white-space: normal;
+      min-width: 110px;
+    }
+    .col-driver .driver-chip {
+      max-width: 160px;
+    }
+    .col-tariff {
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      color: var(--navy);
+    }
+    .col-tariff .empty-tariff {
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .driver-chip {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1px;
+      padding: 1px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .driver-chip .drv-name {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .driver-chip .drv-phone {
+      font-size: 10px;
+      font-weight: 500;
+      opacity: 0.85;
+    }
+    .driver-chip.assigned {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+    .driver-chip.unassigned {
+      background: var(--orange-bg);
+      color: var(--orange);
+      border: 1px dashed #f59e0b;
+      flex-direction: row;
+      align-items: center;
+    }
+    .note-dot {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
+      text-align: center;
+      border-radius: 50%;
+      background: #fef3c7;
+      color: #b45309;
+      font-size: 10px;
+      margin-left: 4px;
+      vertical-align: -1px;
+    }
+    .wa-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border-radius: 10px;
+      border: none;
+      background: #25D366;
+      color: #fff;
+      font-size: 18px;
+      font-family: inherit;
+      cursor: pointer;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .wa-btn:active { opacity: 0.85; transform: scale(0.97); }
+    .wa-btn.disabled {
+      background: #d1d5db;
+      cursor: default;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    .col-wa {
+      width: 48px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .wa-btn-modal {
+      width: 100%;
+      margin-top: 4px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      border: none;
+      background: #25D366;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      display: none;
+    }
+    .wa-btn-modal.show { display: block; }
+    .wa-btn-modal:active { opacity: 0.9; }
+    .driver-cell-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .empty-state button {
+      margin-top: 12px;
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* MODAL */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 100;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.2s, visibility 0.2s;
+    }
+    .overlay.open { opacity: 1; visibility: visible; }
+    .modal {
+      background: var(--surface);
+      width: 100%;
+      max-width: 480px;
+      border-radius: 18px 18px 0 0;
+      padding: 18px 18px 28px;
+      max-height: 92dvh;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .overlay.open .modal { transform: translateY(0); }
+    @media (min-width: 540px) {
+      .overlay { align-items: center; }
+      .modal { border-radius: 16px; margin-bottom: 24px; }
+    }
+    .modal-handle {
+      width: 36px; height: 4px;
+      background: #d0cbc4;
+      border-radius: 2px;
+      margin: 0 auto 14px;
+    }
+    .modal h2 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .form-group { margin-bottom: 12px; }
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: inherit;
+      background: #faf9f7;
+      color: var(--text);
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--navy);
+      background: #fff;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 11px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      min-width: 0;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: var(--navy); color: #fff; }
+    .btn-secondary { background: #eeebe6; color: var(--text); }
+    .btn-danger { background: var(--danger-bg); color: var(--danger); flex: 0.55; }
+
+    /* SETTINGS / DRIVERS */
+    .panel {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      z-index: 90;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    .panel.open { transform: translateX(0); }
+    .panel-header {
+      height: var(--header-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+    }
+    .panel-header h2 { font-size: 16px; font-weight: 700; }
+    .panel-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+    .driver-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .driver-item .avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #c9a87c, #a88b5e);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .driver-item .fields {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+    .driver-item input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #faf9f7;
+    }
+    .driver-item .btn-remove {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: none;
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .add-driver-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .add-driver-row input {
+      flex: 1;
+      min-width: 120px;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      background: var(--surface);
+    }
+    .add-driver-row button {
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      padding: 0 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      min-height: 42px;
+    }
+
+    /* DATE PICKER */
+    .date-picker {
+      position: absolute;
+      top: calc(var(--header-h) + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface);
+      border-radius: 14px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.18);
+      padding: 12px;
+      z-index: 50;
+      display: none;
+      width: 280px;
+    }
+    .date-picker.open { display: block; }
+    .dp-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .dp-header button {
+      background: none; border: none;
+      font-size: 18px; width: 32px; height: 32px;
+      border-radius: 8px; cursor: pointer;
+    }
+    .dp-header span { font-weight: 600; font-size: 14px; text-transform: capitalize; }
+    .dp-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .dp-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+    .dp-day {
+      aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      border-radius: 50%;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .dp-day:hover { background: #f0ece6; }
+    .dp-day.today { font-weight: 700; color: var(--navy); }
+    .dp-day.selected { background: var(--navy); color: #fff; font-weight: 600; }
+    .dp-day.other { color: #ccc; }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--navy);
+      color: #fff;
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 200;
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      white-space: nowrap;
+      max-width: 90vw;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    .syncstatus {
+      font-size: 10px;
+      opacity: 0.75;
+      font-weight: 500;
+      margin-top: 1px;
+    }
+    .syncstatus.ok { color: #86efac; }
+    .syncstatus.err { color: #fca5a5; }
+    .syncstatus.wait { color: #fde68a; }
+
+
+    .client-add-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .client-add-box input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      background: var(--surface);
+    }
+    .client-add-box button {
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .client-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+    }
+    .client-item-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .client-item .avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #5b7c99, #2c3e50);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .client-item .fields {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+    .client-item input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 13px;
+      font-family: inherit;
+      background: #faf9f7;
+    }
+    .client-item .btn-remove {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: none;
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .client-meta {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+
+    @media (max-width: 600px) {
+      .brand span { max-width: 90px; overflow: hidden; text-overflow: ellipsis; }
+      .stats { font-size: 11px; }
+    }
+  </style>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">🚗</div>
+      <div>
+        <span>Viajesion VTC</span>
+        <div class="syncstatus wait" id="syncStatus">Conectando…</div>
+      </div>
+    </div>
+    <div class="date-nav">
+      <button id="btn-prev" aria-label="Día anterior">‹</button>
+      <button class="btn-today" id="btn-today">Hoy</button>
+      <div class="date-display" id="date-display">
+        <span class="wd">miercuri</span>
+        12 aug 2026
+      </div>
+      <button id="btn-next" aria-label="Día siguiente">›</button>
+    </div>
+    <div class="top-actions">
+      <button class="btn-icon" id="btn-carga" title="Carga masiva RVTC (día visible)">📄</button>
+      <button class="btn-icon" id="btn-clients" title="Clientes">🏢</button>
+      <button class="btn-icon" id="btn-settings" title="Conductores">👤</button>
+    </div>
+  </header>
+
+  <div class="date-picker" id="date-picker"></div>
+
+  <div class="toolbar">
+    <div class="stats" id="stats">
+      <span><strong id="stat-total">0</strong> servicios</span>
+      <span><strong id="stat-assigned">0</strong> asignados</span>
+      <span><strong id="stat-open">0</strong> sin conductor</span>
+    </div>
+    <button class="btn-add" id="btn-add">+ Nuevo servicio</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Hora</th>
+          <th>Ref.</th>
+          <th>Cliente</th>
+          <th>Pasajero / Tel</th>
+          <th>Tipo de coche</th>
+          <th>Lugar de recogida</th>
+          <th>Destino</th>
+          <th>Conductor</th>
+          <th>Tarifa conductor</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+      </tbody>
+    </table>
+    <div class="empty-state" id="empty-state" style="display:none">
+      <div>Ningún servicio para este día.</div>
+      <button type="button" id="btn-empty-add">+ Añadir primer servicio</button>
+    </div>
+  </div>
+
+  <!-- JOB MODAL -->
+  <div class="overlay" id="job-overlay">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <h2 id="job-title">Nuevo servicio</h2>
+      <form id="job-form">
+        <input type="hidden" id="job-id" />
+        <div class="form-row">
+          <div class="form-group">
+            <label>Hora (HH:MM)</label>
+            <input type="time" id="job-time" required />
+          </div>
+          <div class="form-group">
+            <label>Referencia del servicio</label>
+            <input type="text" id="job-ref" placeholder="TR-001" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Cliente</label>
+          <select id="job-client-select" required>
+            <option value="">— elegir cliente —</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre del pasajero</label>
+            <input type="text" id="job-passenger" placeholder="Nombre del pasajero" required />
+          </div>
+          <div class="form-group">
+            <label>Teléfono del pasajero</label>
+            <input type="tel" id="job-phone" placeholder="+34 6xx xxx xxx" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Tipo de coche</label>
+          <select id="job-vehicle" required>
+            <option value="Business Car">Business Car</option>
+            <option value="Luxury Car">Luxury Car</option>
+            <option value="Luxury Minivan">Luxury Minivan</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Lugar de recogida</label>
+          <input type="text" id="job-pickup" placeholder="Aeropuerto, hotel, dirección…" required />
+        </div>
+        <div class="form-group">
+          <label>Destino</label>
+          <input type="text" id="job-destination" placeholder="Destino" required />
+        </div>
+        <div class="form-group">
+          <label>Punto más lejano (oculto en la lista)</label>
+          <input type="text" id="job-farthest" placeholder="Parada extra / punto más lejano (opcional)" />
+        </div>
+        <div class="form-group">
+          <label>Conductor asignado</label>
+          <select id="job-driver">
+            <option value="">— sin asignar —</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Precio base (oculto en la lista)</label>
+            <input type="text" id="job-price-base" placeholder="0,00" inputmode="decimal" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label>Tarifa conductor (visible)</label>
+            <input type="text" id="job-price-driver" placeholder="0,00" inputmode="decimal" autocomplete="off" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Notas / observaciones</label>
+          <textarea id="job-notes" rows="2" placeholder="Vuelo, matrícula, observaciones…"></textarea>
+        </div>
+        <button type="button" class="wa-btn-modal" id="btn-whatsapp">Enviar por WhatsApp al conductor</button>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-danger" id="btn-delete" style="display:none">Eliminar</button>
+          <button type="button" class="btn btn-secondary" id="btn-cancel">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- DRIVERS PANEL -->
+  <div class="panel" id="drivers-panel">
+    <div class="panel-header">
+      <h2>Conductores de la flota</h2>
+      <button class="btn btn-secondary" id="btn-close-drivers" style="flex:none;padding:8px 14px;font-size:13px">Cerrar</button>
+    </div>
+    <div class="panel-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Añade o edita conductores (nombre + teléfono). La lista aparece al asignar servicios.</p>
+      <div id="drivers-list"></div>
+      <div class="add-driver-row">
+        <input type="text" id="new-driver-name" placeholder="Nombre del conductor" />
+        <input type="tel" id="new-driver-phone" placeholder="Teléfono personal" />
+        <input type="text" id="new-driver-plate" placeholder="Matrícula vehículo" style="text-transform:uppercase" />
+        <button type="button" id="btn-add-driver">Añadir</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- CLIENTS PANEL -->
+  <div class="panel" id="clients-panel">
+    <div class="panel-header">
+      <h2>Clientes</h2>
+      <button class="btn btn-secondary" id="btn-close-clients" style="flex:none;padding:8px 14px;font-size:13px">Cerrar</button>
+    </div>
+    <div class="panel-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Gestiona los clientes que solicitan servicios. Podrás elegirlos al crear un servicio.</p>
+      <div id="clients-list"></div>
+      <div class="client-add-box">
+        <input type="text" id="new-client-name" placeholder="Nombre completo o empresa *" />
+        <input type="text" id="new-client-cif" placeholder="CIF / NIF" />
+        <input type="text" id="new-client-address" placeholder="Dirección completa" />
+        <input type="tel" id="new-client-phone" placeholder="Teléfono" />
+        <input type="email" id="new-client-email" placeholder="Email" />
+        <button type="button" id="btn-add-client">Añadir cliente</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const VEHICLES = ['Business Car', 'Luxury Car', 'Luxury Minivan'];
+
+    const DEFAULT_DRIVERS = [
+      { id: 'd1', name: 'Alexandru M.', phone: '+40 722 111 001', plate: '' },
+      { id: 'd2', name: 'Maria D.', phone: '+40 723 222 002', plate: '' },
+      { id: 'd3', name: 'George T.', phone: '+40 724 333 003', plate: '' },
+    ];
+
+    const DEFAULT_CLIENTS = [
+      { id: 'c1', name: 'Elite Corp', cif: 'B12345678', address: 'Calle Mayor 1, Madrid', phone: '+34 910 000 001', email: 'info@elitecorp.es' },
+      { id: 'c2', name: 'Marriott Hotels', cif: 'B87654321', address: 'Plaza España 5, Madrid', phone: '+34 910 000 002', email: 'reservas@marriott.es' },
+    ];
+
+    let drivers = [...DEFAULT_DRIVERS];
+    let clients = [...DEFAULT_CLIENTS];
+    let jobs = {}; // { 'YYYY-MM-DD': [ job, ... ] }
+    let currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    let editingId = null;
+    let dpMonth = new Date(currentDate);
+    let ready = false;
+    let applyingRemote = false;
+
+    // ---------- Firebase ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyDFakJqHJOf46bmrSNt7w4fWITQy2rod_k",
+      authDomain: "viajesion-vtc.firebaseapp.com",
+      projectId: "viajesion-vtc",
+      storageBucket: "viajesion-vtc.firebasestorage.app",
+      messagingSenderId: "1037855272460",
+      appId: "1:1037855272460:web:d393d154cf66ee63d98829"
+    };
+
+    let db = null;
+    let docRef = null;
+    let firebaseReady = false;
+
+    function setSync(state, msg) {
+      const el = document.getElementById('syncStatus');
+      if (!el) return;
+      el.className = 'syncstatus ' + state;
+      el.textContent = msg;
+    }
+
+    function load() {
+      // datos llegan por onSnapshot
+    }
+
+    async function save() {
+      if (!firebaseReady || !docRef || applyingRemote) return;
+      try {
+        setSync('wait', 'Guardando…');
+        await docRef.set({
+          drivers,
+          clients,
+          jobs,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+        setSync('ok', 'Sincronizado');
+      } catch (e) {
+        console.error('save error', e);
+        setSync('err', 'Error al guardar');
+        toast('No se pudo guardar: ' + (e.code || e.message || 'revisa reglas Firestore'));
+      }
+    }
+
+    function applyRemote(data) {
+      applyingRemote = true;
+      try {
+        if (Array.isArray(data.drivers)) {
+          drivers = data.drivers.map(d => ({
+            id: d.id,
+            name: d.name || '',
+            phone: d.phone || '',
+            plate: d.plate || ''
+          }));
+        }
+        if (Array.isArray(data.clients)) {
+          clients = data.clients.map(c => ({
+            id: c.id,
+            name: c.name || '',
+            cif: c.cif || '',
+            address: c.address || '',
+            phone: c.phone || '',
+            email: c.email || ''
+          }));
+        }
+        if (data.jobs && typeof data.jobs === 'object') {
+          jobs = data.jobs;
+        }
+        if (typeof render === 'function') render();
+        if (document.getElementById('drivers-panel')?.classList.contains('open') && typeof renderDrivers === 'function') renderDrivers();
+        if (document.getElementById('clients-panel')?.classList.contains('open') && typeof renderClients === 'function') renderClients();
+        const sel = document.getElementById('job-client-select');
+        if (sel && typeof fillClientSelect === 'function') fillClientSelect(sel.value || '');
+        const dsel = document.getElementById('job-driver');
+        if (dsel && typeof fillDriverSelect === 'function') fillDriverSelect(dsel.value || '');
+      } finally {
+        applyingRemote = false;
+      }
+    }
+
+    function startFirebase() {
+      setSync('wait', 'Conectando…');
+
+      if (typeof firebase === 'undefined') {
+        setSync('err', 'Firebase no cargó');
+        toast('No se pudo cargar Firebase (red / bloqueo)');
+        ready = true; // permitir UI local sin nube
+        return;
+      }
+
+      try {
+        if (!firebase.apps || !firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        }
+        db = firebase.firestore();
+        // Forzar conexión con el servidor (evita quedarse en "Cache local")
+        try {
+          db.settings({ merge: true, ignoreUndefinedProperties: true });
+        } catch (e) {}
+        docRef = db.collection('app').doc('main');
+      } catch (e) {
+        console.error(e);
+        setSync('err', 'Error init Firebase');
+        toast(String(e.message || e));
+        ready = true;
+        return;
+      }
+
+      function explainFirebaseError(err) {
+        const code = (err && err.code) ? String(err.code) : '';
+        const msg = (err && err.message) ? String(err.message) : String(err || '');
+        if (code.indexOf('permission-denied') !== -1) {
+          return 'Sin permiso — publica reglas Firestore';
+        }
+        if (code.indexOf('unavailable') !== -1) {
+          return 'Red / Firestore no disponible';
+        }
+        if (code.indexOf('not-found') !== -1 || msg.indexOf('does not exist') !== -1) {
+          return 'Crea Firestore Database en la consola';
+        }
+        if (code.indexOf('failed-precondition') !== -1) {
+          return 'Firestore no creado aún';
+        }
+        return (code || 'error') + (msg ? (': ' + msg.slice(0, 60)) : '');
+      }
+
+      // Listener principal (tiempo real)
+      docRef.onSnapshot({ includeMetadataChanges: true }, async (snap) => {
+        try {
+          if (!snap.exists) {
+            setSync('wait', 'Creando datos…');
+            await docRef.set({
+              drivers: DEFAULT_DRIVERS,
+              clients: DEFAULT_CLIENTS,
+              jobs: {},
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            applyRemote({ drivers: DEFAULT_DRIVERS, clients: DEFAULT_CLIENTS, jobs: {} });
+            firebaseReady = true;
+            ready = true;
+            setSync('ok', 'Sincronizado');
+            return;
+          }
+          applyRemote(snap.data() || {});
+          firebaseReady = true;
+          ready = true;
+          if (snap.metadata.fromCache && !snap.metadata.hasPendingWrites) {
+            // cache mientras llega servidor; no es error
+            setSync('wait', 'Sincronizando…');
+          } else if (snap.metadata.hasPendingWrites) {
+            setSync('wait', 'Enviando…');
+          } else {
+            setSync('ok', 'Sincronizado');
+          }
+        } catch (e) {
+          console.error(e);
+          setSync('err', explainFirebaseError(e));
+        }
+      }, (err) => {
+        console.error('onSnapshot error', err);
+        const text = explainFirebaseError(err);
+        setSync('err', text);
+        toast(text);
+        ready = true;
+      });
+
+      // Lectura forzada del servidor (diagnóstico)
+      docRef.get({ source: 'server' }).then((snap) => {
+        if (snap.exists) {
+          applyRemote(snap.data() || {});
+          firebaseReady = true;
+          ready = true;
+          setSync('ok', 'Sincronizado');
+        }
+      }).catch((err) => {
+        console.error('server get failed', err);
+        // No machacar si el listener ya sincronizó
+        const el = document.getElementById('syncStatus');
+        if (el && el.textContent === 'Sincronizado') return;
+        const text = explainFirebaseError(err);
+        setSync('err', text);
+        toast(text);
+      });
+    }
+
+    function dateKey(d) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+
+    function formatDateDisplay(d) {
+      const days = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+      const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+      return {
+        weekday: days[d.getDay()],
+        label: `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`
+      };
+    }
+
+    function genId() {
+      return 'j' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+    }
+
+
+    // ---------- Carga masiva RVTC ----------
+    const NIF_TITULAR = 'X5276908H';
+
+    const CONTRATO_POR_MATRICULA = {
+      '3112-MKW': 'MADRID',
+      '7630-LYB': 'MADRID',
+      '8327-LWM': 'MADRID',
+      '7299-LSV': 'MADRID',
+      '2293-LBS': 'MADRID',
+      '6452-LTH': 'MADRID',
+      '2406-MCC': 'LOMINCHAR'
+    };
+
+    const TITULAR_POR_MATRICULA = {
+      '3112-MKW': '',
+      '2406-MCC': '',
+      '7630-LYB': 'B24997306',
+      '2293-LBS': '60270812W',
+      '7299-LSV': 'X5660939H',
+      '8327-LWM': 'B24997306',
+      '6452-LTH': '12843108T'
+    };
+
+    function quitarAcentos(s) {
+      return String(s || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function limpiarTextoUbicacion(v) {
+      return String(v == null ? '' : v).trim().replace(/["']/g, '').replace(/;/g, ',').trim();
+    }
+
+    function limpiarCampo(v, maxLen) {
+      let s = v == null || v === '' ? '' : String(v).trim();
+      s = quitarAcentos(s).replace(/;/g, ',');
+      if (maxLen && s.length > maxLen) s = s.slice(0, maxLen);
+      return s;
+    }
+
+    function obtenerUbicaciones() {
+      const raw = [
+        'MANDARIN ORIENTAL|28|079','HOTEL RITZ|28|079','HOTEL RUIZ|28|079','HOTEL RUITZ|28|079',
+        'HOTEL RUIZ MANDARIN ORIENTAL|28|079','HOTEL RUITZ MADRID ORIENTAL|28|079','RITZ MANDARIN|28|079','DELANTE DEL HOTEL|28|079',
+        'MADRID|28|079','TOLEDO|45|168','POLAN|45|133','LOMINCHAR|45|085','GUADALAJARA|19|130','AVILA|05|019',
+        'CUENCA|16|078','CIUDAD REAL|13|034','SEGOVIA|40|194','VALENCIA|46|250','BARCELONA|08|019','SEVILLA|41|091',
+        'MALAGA|29|067','ALICANTE|03|014','ZARAGOZA|50|297',
+        '1. MADRID C/ FORTUNY|28|079','ALCALA DE HENARES|28|005','ALCOBENDAS|28|006','ALOVERA|19|024','ARANJUEZ|28|013',
+        'ARGANDA DEL REY|28|014','BARAJAS AIRPORT|28|079','BARAJAS AIRPORT TERMINAL 4|28|079','BOADILLA DEL MONTE|28|022',
+        'C/ MAUDES 1|28|079','GETAFE|28|065','HORCAJO DE LOS MONTES|13|049','ILLESCAS|45|081',
+        'LOS ANGELES DE SAN RAFAEL|40|076','MADRID - C/ VELAZQUEZ 138|28|079','MADRID AV. FUERZAS ARMADAS 43|28|079',
+        'MADRID C/ BRAGANZA 2|28|079','MADRID C/ MAUDES 1|28|079','MADRID C/ PRINCESA DE EBOLI 2|28|079',
+        'MADRID C/ VILLALAR 3-5|28|079','MADRID HOTEL URSO|28|079','MADRID RESTAURANTE FILANDRON|28|079',
+        'MADRIGAL DE LA VERA|10|111','MARBELLA|29|069','PEDRAZA|40|156','PENAFIEL|47|114','PINTO|28|113',
+        'POZUELO DE ALARCON|28|115','SALAMANCA|37|274','SAN CRISTOBAL DE ENTREVINAS|49|187','SAN FERNANDO DE HENARES|28|130',
+        'SAN MARTIN DE LA VEGA|28|132','SOTO DE VINUELAS|28|079','SARDON DE DUERO|47|157','TERUEL|44|216',
+        'TORREJON DE ARDOZ|28|148','TRES CANTOS|28|903','VALDEMORILLO|28|160','VALDEMORO|28|161',
+        'VEGA DE TERRON|37|173','VILLAMEDIANA DE IREGUA|26|168','VILLANUEVA DE LA TORRE|19|319',
+        'VITORIA-GASTEIZ, ALAVA|01|059','YUNCOS|45|205','AEROPUERTO|28|079','AEROPUERTO BARAJAS|28|079',
+        'AEROPUERTO ADOLFO SUAREZ|28|079','OTOPENI|28|079'
+      ];
+      return raw.map(function (row) {
+        const p = row.split('|');
+        return { key: p[0], prov: p[1], mun: p[2] };
+      });
+    }
+
+    const UBICACIONES_RVTC = obtenerUbicaciones();
+
+    function resolverUbicacion(texto) {
+      texto = limpiarTextoUbicacion(texto);
+      if (!texto) return null;
+      const clave = quitarAcentos(texto).toUpperCase();
+      let mejor = null, mejorLen = -1;
+      for (let i = 0; i < UBICACIONES_RVTC.length; i++) {
+        const kNorm = quitarAcentos(UBICACIONES_RVTC[i].key).toUpperCase();
+        if (clave === kNorm) {
+          return { prov: UBICACIONES_RVTC[i].prov, mun: UBICACIONES_RVTC[i].mun };
+        }
+        if ((clave.indexOf(kNorm) >= 0 || kNorm.indexOf(clave) >= 0) && kNorm.length > mejorLen) {
+          mejorLen = kNorm.length;
+          mejor = UBICACIONES_RVTC[i];
+        }
+      }
+      if (mejor) return { prov: mejor.prov, mun: mejor.mun };
+      if (/MADRID|RITZ|RUIZ|RUITZ|MANDARIN|BARAJAS|AEROPUERTO/.test(clave)) {
+        return { prov: '28', mun: '079' };
+      }
+      return null;
+    }
+
+    function pad2(n) { return String(n).padStart(2, '0'); }
+
+    function formatFechaHoraES(d, timeStr) {
+      const day = pad2(d.getDate());
+      const mo = pad2(d.getMonth() + 1);
+      const y = d.getFullYear();
+      let hh = '00', mm = '00';
+      if (timeStr && String(timeStr).indexOf(':') >= 0) {
+        const parts = String(timeStr).split(':');
+        hh = pad2(parseInt(parts[0], 10) || 0);
+        mm = pad2(parseInt(parts[1], 10) || 0);
+      }
+      return day + '/' + mo + '/' + y + ' ' + hh + ':' + mm;
+    }
+
+    function formatFechaES(d) {
+      return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear();
+    }
+
+    function formatFechaHoraAhora() {
+      const n = new Date();
+      return formatFechaES(n) + ' ' + pad2(n.getHours()) + ':' + pad2(n.getMinutes());
+    }
+
+    function generarCargaMasivaDiaActual() {
+      const list = getDayJobs();
+      if (!list.length) {
+        toast('No hay servicios en el día visible');
+        return;
+      }
+
+      const fechaContrato = formatFechaHoraAhora();
+      const lineas = [];
+      const errores = [];
+      let codigo = 0;
+
+      list.forEach(function (job) {
+        codigo += 1;
+        const driver = drivers.find(function (d) { return d.id === job.driverId; });
+        const matricula = limpiarCampo(driver && driver.plate ? driver.plate : '', 11).toUpperCase();
+        const matriculaClean = matricula.trim();
+        const inicioTxt = job.pickup || '';
+        const destinoTxt = job.destination || '';
+        const dirO = limpiarCampo(job.pickup || '', 100);
+        const dirD = limpiarCampo(job.destination || '', 100);
+        const dirL = limpiarCampo(job.farthest || '', 100);
+        const erroresFila = [];
+
+        if (!matricula) erroresFila.push('falta MATRICULA (conductor)');
+
+        let o = resolverUbicacion(inicioTxt);
+        if (!o) erroresFila.push('origen no resuelto (' + inicioTxt + ')');
+        const provO = o ? o.prov : '';
+        const munO = o ? o.mun : '';
+
+        let lugarContrato = CONTRATO_POR_MATRICULA[matriculaClean] || '';
+        let provC = '', munC = '';
+        if (lugarContrato) {
+          const c = resolverUbicacion(lugarContrato);
+          if (!c) erroresFila.push('contrato no resuelto (' + lugarContrato + ')');
+          else { provC = c.prov; munC = c.mun; }
+        } else {
+          provC = provO; munC = munO;
+        }
+
+        let provD = '', munD = '';
+        if (String(destinoTxt).trim()) {
+          const d = resolverUbicacion(destinoTxt);
+          if (!d) erroresFila.push('destino no resuelto (' + destinoTxt + ')');
+          else { provD = d.prov; munD = d.mun; }
+        }
+
+        const origenEqDestino = String(inicioTxt).trim().toUpperCase() === String(destinoTxt).trim().toUpperCase()
+          && String(destinoTxt).trim() !== '';
+
+        let provL = '', munL = '';
+        if (dirL || origenEqDestino) {
+          let resueltoLej = false;
+          if (dirL) {
+            const L = resolverUbicacion(dirL);
+            if (L) { provL = L.prov; munL = L.mun; resueltoLej = true; }
+          }
+          if (!resueltoLej && provD) { provL = provD; munL = munD; resueltoLej = true; }
+          else if (!resueltoLej && provO) { provL = provO; munL = munO; resueltoLej = true; }
+
+          if (!dirL) {
+            if (origenEqDestino) erroresFila.push('falta PUNTO MAS LEJANO (origen=destino)');
+            else erroresFila.push('falta PUNTO MAS LEJANO');
+          } else if (!resueltoLej) {
+            erroresFila.push('punto mas lejano no resuelto');
+          }
+        }
+
+        const titularMat = TITULAR_POR_MATRICULA.hasOwnProperty(matriculaClean)
+          ? TITULAR_POR_MATRICULA[matriculaClean]
+          : '';
+        let nifTitularLinea, nifIntermediarioLinea;
+        if (!titularMat) {
+          nifTitularLinea = NIF_TITULAR;
+          nifIntermediarioLinea = '';
+        } else {
+          nifTitularLinea = titularMat;
+          nifIntermediarioLinea = NIF_TITULAR;
+        }
+
+        if (erroresFila.length) {
+          errores.push('Ref ' + (job.ref || job.id) + ': ' + erroresFila.join('; '));
+          return;
+        }
+
+        const fh = formatFechaHoraES(currentDate, job.time);
+        const fd = formatFechaES(currentDate);
+        const linea = [
+          String(codigo),
+          matricula,
+          nifTitularLinea,
+          nifIntermediarioLinea,
+          fechaContrato,
+          provC, munC,
+          provO, munO, dirO,
+          fh,
+          provD, munD, dirD,
+          fd,
+          provL, munL, dirL,
+          'S'
+        ].join(';');
+        lineas.push(linea);
+      });
+
+      if (!lineas.length) {
+        toast('Ningún servicio exportable');
+        if (errores.length) {
+          alert('Carga masiva RVTC — errores:\n\n' + errores.join('\n'));
+        }
+        return;
+      }
+
+      const y = currentDate.getFullYear();
+      const m = pad2(currentDate.getMonth() + 1);
+      const d = pad2(currentDate.getDate());
+      const nombre = 'carga_masiva_' + y + m + d + '.txt';
+      const blob = new Blob([lineas.join('\n')], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = nombre;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+
+      let msg = lineas.length + ' servicio(s) → ' + nombre;
+      if (errores.length) msg += ' | ' + errores.length + ' omitido(s)';
+      toast(msg);
+      if (errores.length) {
+        setTimeout(function () {
+          alert('Omitidos por datos incompletos:\n\n' + errores.join('\n'));
+        }, 300);
+      }
+    }
+
+    function genRef() {
+      const n = Math.floor(Math.random() * 9000) + 1000;
+      return 'TR-' + n;
+    }
+
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => el.classList.remove('show'), 2000);
+    }
+
+    function timeToMinutes(t) {
+      if (!t) return 0;
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
+    }
+
+    /** Acepta 15,20 o 15.20 y devuelve number o null */
+    function parseMoney(raw) {
+      if (raw == null) return null;
+      let s = String(raw).trim();
+      if (!s) return null;
+      s = s.replace(/\s/g, '').replace(',', '.');
+      // quitar todo excepto dígitos y un punto
+      s = s.replace(/[^0-9.]/g, '');
+      const parts = s.split('.');
+      if (parts.length > 2) s = parts[0] + '.' + parts.slice(1).join('');
+      const n = parseFloat(s);
+      return isNaN(n) ? null : n;
+    }
+
+    function formatMoneyInput(n) {
+      if (n == null || n === '' || isNaN(Number(n))) return '';
+      return Number(n).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function vehicleClass(v) {
+      if (v === 'Luxury Car') return 'luxury';
+      if (v === 'Luxury Minivan') return 'minivan';
+      return '';
+    }
+
+    /** Normalize phone for wa.me (digits only, with country code). */
+    function waPhone(phone) {
+      if (!phone) return '';
+      let digits = String(phone).replace(/\D/g, '');
+      // RO local: 07xxxxxxxx → 407xxxxxxxx
+      if (digits.length === 10 && digits.startsWith('0')) {
+        digits = '4' + digits;
+      }
+      // ES local: 6xxxxxxxx / 7xxxxxxxx (9 digits) → 346/347…
+      if (digits.length === 9 && (digits.startsWith('6') || digits.startsWith('7'))) {
+        digits = '34' + digits;
+      }
+      return digits;
+    }
+
+    function formatServiceDate(d) {
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      return day + '.' + month + '.' + d.getFullYear();
+    }
+
+    function formatJobMessage(job, driver) {
+      const car = String.fromCodePoint(0x1F697);
+      const cal = String.fromCodePoint(0x1F4C5);
+      const clock = String.fromCodePoint(0x1F550);
+      const person = String.fromCodePoint(0x1F464);
+      const phoneIcon = String.fromCodePoint(0x1F4DE);
+      const pin = String.fromCodePoint(0x1F4CD);
+      const flag = String.fromCodePoint(0x1F3C1);
+      const money = String.fromCodePoint(0x1F4B6);
+      const note = String.fromCodePoint(0x1F4DD);
+
+      const lines = [
+        car + ' Servicio de transfer',
+        cal + ' Fecha: ' + formatServiceDate(currentDate),
+        clock + ' Hora: ' + (job.time || '-'),
+        person + ' Pasajero: ' + (job.passenger || '-'),
+      ];
+      if (job.phone) lines.push(phoneIcon + ' Tel. pasajero: ' + job.phone);
+      lines.push(pin + ' Recogida: ' + (job.pickup || '-'));
+      lines.push(flag + ' Destino: ' + (job.destination || '-'));
+      if (job.priceDriver != null && job.priceDriver !== '') {
+        lines.push(money + ' Tarifa conductor: ' + Number(job.priceDriver).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' EUR');
+      }
+      if (job.notes && String(job.notes).trim()) {
+        lines.push(note + ' Notas: ' + job.notes.trim());
+      }
+      return lines.join(String.fromCharCode(10));
+    }
+
+    function openWhatsApp(job, driver) {
+      if (!driver || !driver.phone) {
+        toast('El conductor no tiene teléfono guardado');
+        return;
+      }
+      const phone = waPhone(driver.phone);
+      if (!phone || phone.length < 8) {
+        toast('Número de teléfono no válido');
+        return;
+      }
+      const message = formatJobMessage(job, driver);
+      const text = encodeURIComponent(message);
+      // WhatsApp Web (Mac/Safari) funciona mejor con esta URL que con wa.me
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      const url = isMobile
+        ? ('https://wa.me/' + phone + '?text=' + text)
+        : ('https://web.whatsapp.com/send?phone=' + phone + '&text=' + text);
+
+      // Safari: window.open a veces rompe Unicode; un <a> click es más fiable
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    function updateModalWaButton(jobLike) {
+      const btn = document.getElementById('btn-whatsapp');
+      const driverId = document.getElementById('job-driver').value;
+      const driver = drivers.find(d => d.id === driverId);
+      if (driver && driver.phone) {
+        btn.classList.add('show');
+        btn.onclick = (e) => {
+          e.preventDefault();
+          // build job from current form values
+          const draft = jobLike ? { ...jobLike } : {};
+          draft.time = document.getElementById('job-time').value;
+          draft.ref = document.getElementById('job-ref').value.trim();
+          const cid = document.getElementById('job-client-select').value;
+          const cc = clients.find(c => c.id === cid);
+          draft.client = cc ? cc.name : '';
+          draft.passenger = document.getElementById('job-passenger').value.trim();
+          draft.phone = document.getElementById('job-phone').value.trim();
+          draft.vehicle = document.getElementById('job-vehicle').value;
+          draft.pickup = document.getElementById('job-pickup').value.trim();
+          draft.destination = document.getElementById('job-destination').value.trim();
+          draft.priceDriver = parseMoney(document.getElementById('job-price-driver').value);
+          draft.notes = document.getElementById('job-notes').value.trim();
+          openWhatsApp(draft, driver);
+        };
+      } else {
+        btn.classList.remove('show');
+        btn.onclick = null;
+      }
+    }
+
+    // ---------- render ----------
+    function updateDateDisplay() {
+      const { weekday, label } = formatDateDisplay(currentDate);
+      document.getElementById('date-display').innerHTML =
+        `<span class="wd">${weekday}</span>${label}`;
+    }
+
+    function getDayJobs() {
+      const key = dateKey(currentDate);
+      const list = jobs[key] || [];
+      return list.slice().sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
+    }
+
+    function isPastJob(job) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (currentDate < today) return true;
+      if (currentDate > today) return false;
+      const now = new Date();
+      const mins = now.getHours() * 60 + now.getMinutes();
+      return timeToMinutes(job.time) + 30 < mins; // 30 min după oră = trecut
+    }
+
+    function render() {
+      const list = getDayJobs();
+      const tbody = document.getElementById('tbody');
+      const empty = document.getElementById('empty-state');
+      tbody.innerHTML = '';
+
+      let assigned = 0;
+      list.forEach(j => { if (j.driverId) assigned++; });
+
+      document.getElementById('stat-total').textContent = list.length;
+      document.getElementById('stat-assigned').textContent = assigned;
+      document.getElementById('stat-open').textContent = list.length - assigned;
+
+      if (list.length === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      list.forEach(job => {
+        const tr = document.createElement('tr');
+        if (isPastJob(job)) tr.classList.add('past');
+        const hasNotes = !!(job.notes && String(job.notes).trim());
+
+        const driver = drivers.find(d => d.id === job.driverId);
+        let driverHtml;
+        if (driver) {
+          driverHtml = `<div class="driver-cell-wrap">
+               <span class="driver-chip assigned">
+                 <span class="drv-name">✓ ${esc(driver.name)}</span>
+                 ${driver.phone ? `<span class="drv-phone">${esc(driver.phone)}</span>` : ''}
+                 ${driver.plate ? `<span class="drv-phone">${esc(driver.plate)}</span>` : ''}
+               </span>
+             </div>`;
+        } else {
+          driverHtml = `<span class="driver-chip unassigned">— elegir</span>`;
+        }
+
+        const canWa = !!(driver && driver.phone);
+        const waHtml = canWa
+          ? `<button type="button" class="wa-btn" title="WhatsApp">
+               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+             </button>`
+          : `<button type="button" class="wa-btn disabled" title="Asigna conductor con teléfono" disabled>
+               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+             </button>`;
+
+        const noteIcon = hasNotes
+          ? `<span class="note-dot" title="${esc(job.notes)}">📝</span>`
+          : '';
+
+        const driverPrice = job.priceDriver != null && job.priceDriver !== ''
+          ? Number(job.priceDriver)
+          : null;
+        const tariffHtml = driverPrice != null && !isNaN(driverPrice)
+          ? `${driverPrice.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`
+          : `<span class="empty-tariff">—</span>`;
+
+        tr.innerHTML = `
+          <td class="col-time">${esc(job.time || '')}</td>
+          <td class="col-ref">${esc(job.ref || '—')}${noteIcon}</td>
+          <td class="col-client">${esc(job.client || '')}</td>
+          <td class="col-passenger">
+            ${esc(job.passenger || '')}
+            ${job.phone ? `<span class="tel">${esc(job.phone)}</span>` : ''}
+          </td>
+          <td class="col-vehicle"><span class="vehicle-badge ${vehicleClass(job.vehicle)}">${esc(job.vehicle || '')}</span></td>
+          <td class="col-place" title="${esc(job.pickup || '')}">${esc(job.pickup || '')}</td>
+          <td class="col-dest" title="${esc(job.destination || '')}">${esc(job.destination || '')}</td>
+          <td class="col-driver">${driverHtml}</td>
+          <td class="col-tariff">${tariffHtml}</td>
+          <td class="col-wa">${waHtml}</td>
+        `;
+        tr.addEventListener('click', () => openEdit(job));
+        tbody.appendChild(tr);
+
+        const wa = tr.querySelector('.wa-btn:not(.disabled)');
+        if (wa) {
+          wa.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openWhatsApp(job, driver);
+          });
+        }
+      });
+    }
+
+    function esc(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+
+    // ---------- client select in form ----------
+    function fillClientSelect(selectedId) {
+      const sel = document.getElementById('job-client-select');
+      if (!sel) return;
+      sel.innerHTML = '<option value="">— elegir cliente —</option>';
+      clients.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.cif ? (c.name + ' (' + c.cif + ')') : c.name;
+        if (c.id === selectedId) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    }
+
+    function applyClientFromSelect() {
+      // el nombre se toma del cliente seleccionado al guardar
+    }
+
+    // ---------- driver select in form ----------
+    function fillDriverSelect(selectedId) {
+      const sel = document.getElementById('job-driver');
+      sel.innerHTML = '<option value="">— sin asignar —</option>';
+      drivers.forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d.id;
+        const bits = [d.name];
+        if (d.phone) bits.push(d.phone);
+        if (d.plate) bits.push(d.plate);
+        opt.textContent = bits.length > 1 ? (bits[0] + ' (' + bits.slice(1).join(' · ') + ')') : bits[0];
+        if (d.id === selectedId) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    }
+
+    // ---------- modal ----------
+    function openNew() {
+      editingId = null;
+      document.getElementById('job-title').textContent = 'Nuevo servicio';
+      document.getElementById('job-id').value = '';
+      document.getElementById('job-time').value = '';
+      document.getElementById('job-ref').value = genRef();
+      fillClientSelect('');
+      document.getElementById('job-passenger').value = '';
+      document.getElementById('job-phone').value = '';
+      document.getElementById('job-vehicle').value = 'Business Car';
+      document.getElementById('job-pickup').value = '';
+      document.getElementById('job-destination').value = '';
+      document.getElementById('job-farthest').value = '';
+      document.getElementById('job-price-base').value = '';
+      document.getElementById('job-price-driver').value = '';
+      document.getElementById('job-notes').value = '';
+      fillDriverSelect('');
+      document.getElementById('btn-delete').style.display = 'none';
+      updateModalWaButton(null);
+      document.getElementById('job-overlay').classList.add('open');
+      setTimeout(() => document.getElementById('job-time').focus(), 280);
+    }
+
+    function openEdit(job) {
+      editingId = job.id;
+      document.getElementById('job-title').textContent = 'Editar servicio';
+      document.getElementById('job-id').value = job.id;
+      document.getElementById('job-time').value = job.time || '';
+      document.getElementById('job-ref').value = job.ref || '';
+      fillClientSelect(job.clientId || '');
+      document.getElementById('job-passenger').value = job.passenger || '';
+      document.getElementById('job-phone').value = job.phone || '';
+      document.getElementById('job-vehicle').value = job.vehicle || 'Business Car';
+      document.getElementById('job-pickup').value = job.pickup || '';
+      document.getElementById('job-destination').value = job.destination || '';
+      document.getElementById('job-farthest').value = job.farthest || '';
+      document.getElementById('job-price-base').value = formatMoneyInput(job.priceBase);
+      document.getElementById('job-price-driver').value = formatMoneyInput(job.priceDriver);
+      document.getElementById('job-notes').value = job.notes || '';
+      fillDriverSelect(job.driverId || '');
+      document.getElementById('btn-delete').style.display = 'block';
+      updateModalWaButton(job);
+      document.getElementById('job-overlay').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('job-overlay').classList.remove('open');
+    }
+
+    function saveJob(e) {
+      e.preventDefault();
+      const key = dateKey(currentDate);
+      if (!jobs[key]) jobs[key] = [];
+
+      const priceBase = parseMoney(document.getElementById('job-price-base').value);
+      const priceDriver = parseMoney(document.getElementById('job-price-driver').value);
+      const clientId = document.getElementById('job-client-select').value || '';
+      const selectedClient = clients.find(c => c.id === clientId);
+      if (!selectedClient) {
+        toast('Selecciona un cliente de la lista');
+        return;
+      }
+      const data = {
+        id: editingId || genId(),
+        time: document.getElementById('job-time').value,
+        ref: document.getElementById('job-ref').value.trim(),
+        clientId: clientId,
+        client: selectedClient.name,
+        passenger: document.getElementById('job-passenger').value.trim(),
+        phone: document.getElementById('job-phone').value.trim(),
+        vehicle: document.getElementById('job-vehicle').value,
+        pickup: document.getElementById('job-pickup').value.trim(),
+        destination: document.getElementById('job-destination').value.trim(),
+        farthest: document.getElementById('job-farthest').value.trim(),
+        driverId: document.getElementById('job-driver').value || '',
+        priceBase: priceBase,
+        priceDriver: priceDriver,
+        notes: document.getElementById('job-notes').value.trim(),
+      };
+
+      if (editingId) {
+        const idx = jobs[key].findIndex(j => j.id === editingId);
+        if (idx !== -1) jobs[key][idx] = data;
+        toast('Servicio actualizado');
+      } else {
+        jobs[key].push(data);
+        toast('Servicio añadido');
+      }
+      save();
+      closeModal();
+      render();
+    }
+
+    function deleteJob() {
+      if (!editingId) return;
+      if (!confirm('¿Eliminar este servicio definitivamente?')) return;
+      const key = dateKey(currentDate);
+      jobs[key] = (jobs[key] || []).filter(j => j.id !== editingId);
+      save();
+      closeModal();
+      render();
+      toast('Servicio eliminado');
+    }
+
+
+    // ---------- clients panel ----------
+    function renderClients() {
+      const list = document.getElementById('clients-list');
+      list.innerHTML = '';
+      clients.forEach((c, i) => {
+        const item = document.createElement('div');
+        item.className = 'client-item';
+        item.innerHTML = `
+          <div class="client-item-head">
+            <div class="avatar">${esc((c.name || '?').charAt(0).toUpperCase())}</div>
+            <div class="fields">
+              <input type="text" value="${esc(c.name || '')}" data-idx="${i}" data-field="name" placeholder="Nombre / empresa" />
+              <input type="text" value="${esc(c.cif || '')}" data-idx="${i}" data-field="cif" placeholder="CIF / NIF" />
+              <input type="text" value="${esc(c.address || '')}" data-idx="${i}" data-field="address" placeholder="Dirección completa" />
+              <input type="tel" value="${esc(c.phone || '')}" data-idx="${i}" data-field="phone" placeholder="Teléfono" />
+              <input type="email" value="${esc(c.email || '')}" data-idx="${i}" data-field="email" placeholder="Email" />
+            </div>
+            <button type="button" class="btn-remove" data-idx="${i}" title="Eliminar">×</button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+
+      list.querySelectorAll('input').forEach(inp => {
+        inp.addEventListener('change', () => {
+          const idx = +inp.dataset.idx;
+          const field = inp.dataset.field;
+          if (field === 'name') {
+            clients[idx].name = inp.value.trim() || clients[idx].name;
+          } else {
+            clients[idx][field] = inp.value.trim();
+          }
+          save();
+          fillClientSelect(document.getElementById('job-client-select')?.value || '');
+          toast('Cliente actualizado');
+        });
+      });
+      list.querySelectorAll('.btn-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = +btn.dataset.idx;
+          const name = clients[idx].name;
+          if (!confirm('¿Eliminar al cliente "' + name + '"?')) return;
+          const removedId = clients[idx].id;
+          clients.splice(idx, 1);
+          Object.keys(jobs).forEach(k => {
+            (jobs[k] || []).forEach(j => {
+              if (j.clientId === removedId) j.clientId = '';
+            });
+          });
+          save();
+          renderClients();
+          fillClientSelect('');
+          toast('Cliente eliminado');
+        });
+      });
+    }
+
+    function addClient() {
+      const name = document.getElementById('new-client-name').value.trim();
+      if (!name) {
+        toast('El nombre es obligatorio');
+        return;
+      }
+      clients.push({
+        id: 'c' + Date.now().toString(36),
+        name,
+        cif: document.getElementById('new-client-cif').value.trim(),
+        address: document.getElementById('new-client-address').value.trim(),
+        phone: document.getElementById('new-client-phone').value.trim(),
+        email: document.getElementById('new-client-email').value.trim()
+      });
+      document.getElementById('new-client-name').value = '';
+      document.getElementById('new-client-cif').value = '';
+      document.getElementById('new-client-address').value = '';
+      document.getElementById('new-client-phone').value = '';
+      document.getElementById('new-client-email').value = '';
+      save();
+      renderClients();
+      toast('Cliente añadido');
+    }
+
+    // ---------- drivers panel ----------
+    function renderDrivers() {
+      const list = document.getElementById('drivers-list');
+      list.innerHTML = '';
+      drivers.forEach((d, i) => {
+        const item = document.createElement('div');
+        item.className = 'driver-item';
+        item.innerHTML = `
+          <div class="avatar">${esc((d.name || '?').charAt(0).toUpperCase())}</div>
+          <div class="fields">
+            <input type="text" value="${esc(d.name || '')}" data-idx="${i}" data-field="name" placeholder="Nombre" />
+            <input type="tel" value="${esc(d.phone || '')}" data-idx="${i}" data-field="phone" placeholder="Teléfono personal" />
+            <input type="text" value="${esc(d.plate || '')}" data-idx="${i}" data-field="plate" placeholder="Matrícula vehículo" style="text-transform:uppercase" />
+          </div>
+          <button type="button" class="btn-remove" data-idx="${i}" title="Eliminar">×</button>
+        `;
+        list.appendChild(item);
+      });
+
+      list.querySelectorAll('input').forEach(inp => {
+        inp.addEventListener('change', () => {
+          const idx = +inp.dataset.idx;
+          const field = inp.dataset.field;
+          if (field === 'name') {
+            drivers[idx].name = inp.value.trim() || drivers[idx].name;
+          } else if (field === 'phone') {
+            drivers[idx].phone = inp.value.trim();
+          } else if (field === 'plate') {
+            drivers[idx].plate = inp.value.trim().toUpperCase();
+          }
+          save();
+          render();
+          toast('Conductor actualizado');
+        });
+      });
+      list.querySelectorAll('.btn-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = +btn.dataset.idx;
+          const name = drivers[idx].name;
+          if (!confirm(`¿Eliminar al conductor "${name}"?`)) return;
+          const removedId = drivers[idx].id;
+          drivers.splice(idx, 1);
+          Object.keys(jobs).forEach(k => {
+            (jobs[k] || []).forEach(j => {
+              if (j.driverId === removedId) j.driverId = '';
+            });
+          });
+          save();
+          renderDrivers();
+          render();
+          toast('Conductor eliminado');
+        });
+      });
+    }
+
+    function addDriver() {
+      const nameInp = document.getElementById('new-driver-name');
+      const phoneInp = document.getElementById('new-driver-phone');
+      const plateInp = document.getElementById('new-driver-plate');
+      const name = nameInp.value.trim();
+      if (!name) return;
+      drivers.push({
+        id: 'd' + Date.now().toString(36),
+        name,
+        phone: phoneInp.value.trim(),
+        plate: (plateInp.value || '').trim().toUpperCase()
+      });
+      nameInp.value = '';
+      phoneInp.value = '';
+      plateInp.value = '';
+      save();
+      renderDrivers();
+      toast('Conductor añadido');
+    }
+
+    // ---------- date nav ----------
+    function changeDate(delta) {
+      currentDate.setDate(currentDate.getDate() + delta);
+      updateDateDisplay();
+      render();
+    }
+    function goToday() {
+      currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0);
+      updateDateDisplay();
+      render();
+    }
+
+    // ---------- date picker ----------
+    function renderDatePicker() {
+      const picker = document.getElementById('date-picker');
+      const year = dpMonth.getFullYear();
+      const month = dpMonth.getMonth();
+      const firstDay = new Date(year, month, 1);
+      const startDow = (firstDay.getDay() + 6) % 7;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+      let html = `
+        <div class="dp-header">
+          <button type="button" id="dp-prev">‹</button>
+          <span>${months[month]} ${year}</span>
+          <button type="button" id="dp-next">›</button>
+        </div>
+        <div class="dp-weekdays"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+        <div class="dp-days">`;
+
+      const prevDays = new Date(year, month, 0).getDate();
+      for (let i = 0; i < startDow; i++) {
+        const d = prevDays - startDow + i + 1;
+        html += `<button type="button" class="dp-day other" data-y="${year}" data-m="${month-1}" data-d="${d}">${d}</button>`;
+      }
+      const today = new Date();
+      for (let d = 1; d <= daysInMonth; d++) {
+        const isToday = today.getFullYear()===year && today.getMonth()===month && today.getDate()===d;
+        const isSel = currentDate.getFullYear()===year && currentDate.getMonth()===month && currentDate.getDate()===d;
+        html += `<button type="button" class="dp-day${isToday?' today':''}${isSel?' selected':''}" data-y="${year}" data-m="${month}" data-d="${d}">${d}</button>`;
+      }
+      const rem = 42 - (startDow + daysInMonth);
+      for (let i = 1; i <= rem; i++) {
+        html += `<button type="button" class="dp-day other" data-y="${year}" data-m="${month+1}" data-d="${i}">${i}</button>`;
+      }
+      html += '</div>';
+      picker.innerHTML = html;
+
+      document.getElementById('dp-prev').onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dpMonth = new Date(dpMonth.getFullYear(), dpMonth.getMonth() - 1, 1);
+        renderDatePicker();
+      };
+      document.getElementById('dp-next').onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dpMonth = new Date(dpMonth.getFullYear(), dpMonth.getMonth() + 1, 1);
+        renderDatePicker();
+      };
+      picker.querySelectorAll('.dp-day').forEach(btn => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          currentDate = new Date(+btn.dataset.y, +btn.dataset.m, +btn.dataset.d);
+          currentDate.setHours(0, 0, 0, 0);
+          updateDateDisplay();
+          render();
+          picker.classList.remove('open');
+        };
+      });
+      // evitar que el click en el calendario cierre el panel
+      picker.onclick = (e) => e.stopPropagation();
+    }
+
+    // ---------- seed sample ----------
+    function seedIfEmpty() {
+      // Los datos iniciales se crean en Firebase la primera vez
+    }
+
+    // ---------- init ----------
+    function init() {
+      updateDateDisplay();
+      render();
+      startFirebase();
+
+      document.getElementById('btn-prev').onclick = () => changeDate(-1);
+      document.getElementById('btn-next').onclick = () => changeDate(1);
+      document.getElementById('btn-today').onclick = goToday;
+      document.getElementById('btn-add').onclick = openNew;
+      document.getElementById('btn-empty-add').onclick = openNew;
+      document.getElementById('btn-cancel').onclick = closeModal;
+      document.getElementById('btn-delete').onclick = deleteJob;
+      document.getElementById('job-form').onsubmit = saveJob;
+      document.getElementById('job-driver').addEventListener('change', () => {
+        updateModalWaButton(editingId ? (getDayJobs().find(j => j.id === editingId) || {}) : {});
+      });
+
+      document.getElementById('btn-settings').onclick = () => {
+        renderDrivers();
+        document.getElementById('drivers-panel').classList.add('open');
+      };
+      document.getElementById('btn-close-drivers').onclick = () => {
+        document.getElementById('drivers-panel').classList.remove('open');
+      };
+      document.getElementById('btn-add-driver').onclick = addDriver;
+
+      document.getElementById('btn-carga').onclick = () => generarCargaMasivaDiaActual();
+      document.getElementById('btn-clients').onclick = () => {
+        renderClients();
+        document.getElementById('clients-panel').classList.add('open');
+      };
+      document.getElementById('btn-close-clients').onclick = () => {
+        document.getElementById('clients-panel').classList.remove('open');
+      };
+      document.getElementById('btn-add-client').onclick = addClient;
+      document.getElementById('job-client-select').addEventListener('change', applyClientFromSelect);
+      document.getElementById('new-driver-name').addEventListener('keydown', e => {
+        if (e.key === 'Enter') addDriver();
+      });
+
+      document.getElementById('date-display').onclick = () => {
+        const picker = document.getElementById('date-picker');
+        if (picker.classList.contains('open')) {
+          picker.classList.remove('open');
+        } else {
+          dpMonth = new Date(currentDate);
+          renderDatePicker();
+          picker.classList.add('open');
+        }
+      };
+
+      document.getElementById('job-overlay').addEventListener('click', e => {
+        if (e.target === e.currentTarget) closeModal();
+      });
+
+      document.addEventListener('click', e => {
+        const picker = document.getElementById('date-picker');
+        if (!e.target.closest('#date-picker') && !e.target.closest('#date-display')) {
+          picker.classList.remove('open');
+        }
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
